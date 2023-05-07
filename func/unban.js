@@ -17,7 +17,7 @@ export async function handler(event, context) {
                 return {
                     statusCode: 303,
                     headers: {
-                        "Location": `/success?msg=${encodeURIComponent("User telah di unban\nHarap hubungi yang member untuk memberi info")}`
+                        "Location": `/success?msg=${encodeURIComponent("User telah di unban\nHarap hubungi member untuk memberi info")}`
                     }
                 };
             } catch (e) {
