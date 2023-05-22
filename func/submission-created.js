@@ -1,12 +1,10 @@
 import fetch from 'node-fetch';
-
 import { API_ENDPOINT, MAX_EMBED_FIELD_CHARS, MAX_EMBED_FOOTER_CHARS } from "./helpers/discord-helpers.js";
 import { createJwt, decodeJwt } from "./helpers/jwt-helpers.js";
 import { getBan, isBlocked } from "./helpers/user-helpers.js";
 
-export async function handler(event, context) {
+export async function handler(event, context, interaction) {
     let payload;
-
     if (process.env.USE_NETLIFY_FORMS) {
         payload = JSON.parse(event.body).payload.data;
     } else {
@@ -42,7 +40,7 @@ export async function handler(event, context) {
         
         const message = {
             embed: {
-                title: "New appeal submitted!",
+                title: "Permintaan Unban Baru !",
                 timestamp: new Date().toISOString(),
                 fields: [
                     {
@@ -88,8 +86,9 @@ export async function handler(event, context) {
                     components: [{
                         type: 2,
                         style: 5,
-                        label: "Setuju untuk unban member",
-                        url: `${unbanUrl.toString()}?token=${encodeURIComponent(createJwt(unbanInfo))}`
+                        label: "Unban member",
+                        url: `${unbanUrl.toString()}?token=${encodeURIComponent(createJwt(unbanInfo))}`,
+                        custom_id: "unban_button" // Menambahkan custom_id ke tombol unban
                     }]
                 }];
             }
@@ -105,7 +104,19 @@ export async function handler(event, context) {
         });
 
         if (result.ok) {
+            const { id: messageId } = await result.json(); // Simpan ID pesan dalam variabel messageId
             if (process.env.USE_NETLIFY_FORMS) {
+                if (interaction.isButton() && interaction.customId === "unban_button") {
+                    const channel = interaction.channel;
+                    const message = await channel.messages.fetch(messageId); // Mengambil pesan dengan ID yang disimpan sebelumnya
+            
+                    // Memperbarui embed dengan informasi bahwa anggota telah diunban
+                    const embed = message.embeds[0]; // Mengambil embed pertama dari pesan
+                    embed.description = "Member telah diunban oleh " + interaction.user.username;
+            
+                    // Mengirimkan pesan yang sudah diperbarui
+                    await message.edit({ embeds: [embed] });
+                }
                 return {
                     statusCode: 200
                 };
@@ -121,6 +132,7 @@ export async function handler(event, context) {
             console.log(JSON.stringify(await result.json()));
             throw new Error("Failed to submit message");
         }
+        
     }
 
     return {
