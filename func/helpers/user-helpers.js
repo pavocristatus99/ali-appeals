@@ -78,7 +78,7 @@ export async function sendMessageToUser(userId, message, botToken) {
       const { id: channelId } = await response.json();
   
       // Mengirim pesan ke channel pengguna
-      await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+      await fetch(`https://discord.com/channels/@me/${channelId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bot ${botToken}`,
