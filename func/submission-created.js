@@ -87,7 +87,6 @@ export async function handler(event, context, interaction) {
                         type: 2,
                         style: 5,
                         label: "Unban member",
-                        url: `${unbanUrl.toString()}?token=${encodeURIComponent(createJwt(unbanInfo))}`,
                         custom_id: "unban_button" // Menambahkan custom_id ke tombol unban
                     }]
                 }];
