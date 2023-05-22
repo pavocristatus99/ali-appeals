@@ -1,10 +1,12 @@
 import fetch from 'node-fetch';
+
 import { API_ENDPOINT, MAX_EMBED_FIELD_CHARS, MAX_EMBED_FOOTER_CHARS } from "./helpers/discord-helpers.js";
 import { createJwt, decodeJwt } from "./helpers/jwt-helpers.js";
 import { getBan, isBlocked } from "./helpers/user-helpers.js";
 
 export async function handler(event, context) {
     let payload;
+
     if (process.env.USE_NETLIFY_FORMS) {
         payload = JSON.parse(event.body).payload.data;
     } else {
@@ -33,7 +35,7 @@ export async function handler(event, context) {
             return {
                 statusCode: 303,
                 headers: {
-                    "Location": `/error?msg=${encodeURIComponent("Anda tidak dapat mengajukan ban appeal dengan akun ini.")}`,
+                    "Location": `/error?msg=${encodeURIComponent("kamu tidak dapat mengajukan ban appeal dengan akun ini.")}`,
                 },
             };
         }
@@ -48,15 +50,15 @@ export async function handler(event, context) {
                         value: `<@${userInfo.id}> (${userInfo.username}#${userInfo.discriminator})`
                     },
                     {
-                        name: "Kenapa anda diban ?",
+                        name: "Kenapa kamu diban ?",
                         value: payload.banReason.slice(0, MAX_EMBED_FIELD_CHARS)
                     },
                     {
-                        name: "Mengapa Anda merasa Anda harus di unban ?",
+                        name: "Mengapa kamu merasa kamu harus di unban ?",
                         value: payload.appealText.slice(0, MAX_EMBED_FIELD_CHARS)
                     },
                     {
-                        name: "Apa yang akan Anda lakukan untuk tidak diban di kemudian hari ?",
+                        name: "Apa yang akan kamu lakukan untuk tidak diban di kemudian hari ?",
                         value: payload.futureActions.slice(0, MAX_EMBED_FIELD_CHARS)
                     }
                 ]

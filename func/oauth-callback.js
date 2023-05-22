@@ -57,7 +57,7 @@ export async function handler(event, context) {
                 return {
                     statusCode: 303,
                     headers: {
-                        "Location": `/error?msg=${encodeURIComponent("Anda tidak dapat mengajukan ban appeal dengan akun ini.")}`,
+                        "Location": `/error?msg=${encodeURIComponent("kamu tidak dapat mengajukan ban appeal dengan akun ini.")}`,
                     },
                 };
             }

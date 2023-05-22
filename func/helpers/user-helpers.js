@@ -61,32 +61,3 @@ export function isBlocked(userId) {
 
     return false;
 }
-export async function sendMessageToUser(userId, message, botToken) {
-    const APIEndpoint = `https://discord.com/api/v10/users/@me/channels`;
-    
-    // Mengambil channel ID untuk mengirim pesan pribadi ke pengguna
-    const response = await fetch(APIEndpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bot ${botToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ recipients: [userId] })
-    });
-  
-    if (response.ok) {
-      const { id: channelId } = await response.json();
-  
-      // Mengirim pesan ke channel pengguna
-      await fetch(`https://discord.com/channels/@me/${channelId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bot ${botToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: message })
-      });
-    } else {
-      throw new Error('Failed to send message to user');
-    }
-  }

@@ -1,6 +1,5 @@
 import { decodeJwt } from "./helpers/jwt-helpers.js";
 import { unbanUser } from "./helpers/user-helpers.js";
-import { sendMessageToUser } from "./helpers/discord-helpers.js"; // Misalkan ada modul helper untuk mengirim pesan Discord
 
 export async function handler(event, context) {
     if (event.httpMethod !== "GET") {
@@ -14,21 +13,18 @@ export async function handler(event, context) {
         if (unbanInfo.userId !== undefined) {
             try {
                 await unbanUser(unbanInfo.userId, process.env.GUILD_ID, process.env.DISCORD_BOT_TOKEN);
-
-                // Kirim pesan ke member yang berhasil diunban
-                await sendMessageToUser(unbanInfo.userId, "Anda telah berhasil diunban!");
-
+                
                 return {
                     statusCode: 303,
                     headers: {
-                        "Location": `/success?msg=${encodeURIComponent("User has been unbanned\nPlease contact them and let them know")}`
+                        "Location": `/success?msg=${encodeURIComponent("User telah di unban\nHarap hubungi member untuk memberi info")}`
                     }
                 };
             } catch (e) {
                 return {
                     statusCode: 303,
                     headers: {
-                        "Location": `/error?msg=${encodeURIComponent("Failed to unban user\nPlease manually unban")}`
+                        "Location": `/error?msg=${encodeURIComponent("Gagal melakukakan unban\nHarap melakukan unban manual")}`
                     }
                 };
             }
